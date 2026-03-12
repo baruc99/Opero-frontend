@@ -28,7 +28,7 @@ export default function Register() {
 
         <div className="flex h-screen items-center justify-center bg-gray-50">
 
-            <Card className="w-[380px]">
+            <Card className="w-95">
 
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
