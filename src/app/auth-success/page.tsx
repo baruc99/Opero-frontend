@@ -1,26 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AuthSuccess() {
 
-    const params = useSearchParams();
+    const router = useRouter();
 
     useEffect(() => {
 
+        const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
 
         if (token) {
-
             localStorage.setItem("token", token);
-
-            window.location.href = "/dashboard";
-
+            router.push("/dashboard");
+        } else {
+            router.push("/login");
         }
 
     }, []);
 
     return <p>Logging in...</p>;
-
 }
