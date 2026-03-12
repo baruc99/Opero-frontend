@@ -1,13 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            router.push("/dashboard");
+        }
+
+    }, [router]);
 
     async function handleSubmit(e: any) {
         e.preventDefault();
@@ -19,9 +32,21 @@ export default function Login() {
                 body: JSON.stringify({ email, password })
             });
 
-            localStorage.setItem("token", res.token);
+            const token = res.data.token;
 
-            window.location.href = "/dashboard";
+            localStorage.setItem("token", token);
+
+            const businesses = await apiRequest("/businesses", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (businesses.data.length === 0) {
+                window.location.href = "/create-business";
+            } else {
+                window.location.href = "/dashboard";
+            }
 
         } catch (err: any) {
             setError(err.message);
