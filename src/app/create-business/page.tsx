@@ -1,90 +1,70 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiRequest } from "@/lib/api";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { apiRequest } from "@/lib/api"
 
 export default function CreateBusiness() {
 
-    const router = useRouter();
+    const [name, setName] = useState("")
+    const [type, setType] = useState("")
 
-    const [name, setName] = useState("");
-    const [type, setType] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    async function handleSubmit(e: any) {
 
-    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault()
 
-        e.preventDefault();
+        const token = localStorage.getItem("token")
 
-        try {
+        await apiRequest("/businesses", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ name, type })
+        })
 
-            setLoading(true);
-            setError("");
-
-            await apiRequest("/businesses", {
-                method: "POST",
-                body: JSON.stringify({ name, type })
-            });
-
-            router.push("/dashboard");
-
-        } catch (err: any) {
-
-            setError(err.message);
-
-        } finally {
-
-            setLoading(false);
-
-        }
-
+        window.location.href = "/dashboard"
     }
 
     return (
 
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex h-screen items-center justify-center bg-gray-50">
 
-            <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-4 w-80"
-            >
+            <Card className="w-[380px]">
 
-                <h1 className="text-xl font-bold">
-                    Create Business
-                </h1>
+                <CardHeader>
+                    <CardTitle>Create Business</CardTitle>
+                </CardHeader>
 
-                {error && (
-                    <p className="text-red-500">
-                        {error}
-                    </p>
-                )}
+                <CardContent>
 
-                <input
-                    className="border p-2"
-                    placeholder="Business name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-4"
+                    >
 
-                <input
-                    className="border p-2"
-                    placeholder="Type"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                />
+                        <Input
+                            placeholder="Business name"
+                            onChange={(e) => setName(e.target.value)}
+                        />
 
-                <button
-                    disabled={loading}
-                    className="bg-black text-white p-2"
-                >
-                    {loading ? "Creating..." : "Create"}
-                </button>
+                        <Input
+                            placeholder="Type (barber, dentist...)"
+                            onChange={(e) => setType(e.target.value)}
+                        />
 
-            </form>
+                        <Button>
+                            Create
+                        </Button>
+
+                    </form>
+
+                </CardContent>
+
+            </Card>
 
         </div>
-
-    );
-
+    )
 }

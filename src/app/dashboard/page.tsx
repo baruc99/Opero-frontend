@@ -1,59 +1,66 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiRequest } from "@/lib/api";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { apiRequest } from "@/lib/api"
+
+import { Button } from "@/components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card"
 
 export default function Dashboard() {
 
-    const router = useRouter();
+    const router = useRouter()
 
-    const [businesses, setBusinesses] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [businesses, setBusinesses] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
 
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token")
 
         if (!token) {
-            router.push("/login");
-            return;
+            router.push("/login")
+            return
         }
 
         async function loadBusinesses() {
 
             try {
 
-                const res = await apiRequest("/businesses");
+                const res = await apiRequest("/businesses", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
 
-                console.log(res);
-
-
-                setBusinesses(res.data || []);
+                setBusinesses(res.data || [])
 
             } catch (err) {
 
-                console.error(err);
+                console.error(err)
 
-                localStorage.removeItem("token");
-                router.push("/login");
+                localStorage.removeItem("token")
+                router.push("/login")
 
             } finally {
-
-                setLoading(false);
-
+                setLoading(false)
             }
 
         }
 
-        loadBusinesses();
+        loadBusinesses()
 
-    }, []);
+    }, [router])
 
     function logout() {
 
-        localStorage.removeItem("token");
-        router.push("/login");
+        localStorage.removeItem("token")
+        router.push("/login")
 
     }
 
@@ -62,56 +69,72 @@ export default function Dashboard() {
             <div className="flex h-screen items-center justify-center">
                 Loading...
             </div>
-        );
+        )
     }
 
     return (
-        <div className="p-10">
 
-            <div className="flex justify-between items-center">
+        <div className="p-10 max-w-4xl mx-auto">
+
+            <div className="flex justify-between items-center mb-6">
 
                 <h1 className="text-3xl font-bold">
                     Dashboard
                 </h1>
 
-                <button
+                <Button
+                    variant="destructive"
                     onClick={logout}
-                    className="bg-red-500 text-white px-4 py-2 rounded"
                 >
                     Logout
-                </button>
+                </Button>
 
             </div>
 
-            <div className="mt-6">
+            <div className="mb-6">
 
-                <button
+                <Button
                     onClick={() => router.push("/create-business")}
-                    className="bg-black text-white px-4 py-2 rounded"
                 >
                     Add Business
-                </button>
+                </Button>
 
             </div>
 
-            <div className="mt-6">
+            <div className="grid gap-4">
 
                 {businesses.length === 0 && (
-                    <p>No businesses yet</p>
+                    <p className="text-gray-500">
+                        No businesses yet
+                    </p>
                 )}
 
                 {businesses.map((b: any) => (
-                    <div
-                        key={b.id}
-                        className="border p-3 mb-2 rounded"
-                    >
-                        {b.name}
-                    </div>
+                    <Card key={b.id}>
+
+                        <CardHeader>
+                            <CardTitle>
+                                {b.name}
+                            </CardTitle>
+                        </CardHeader>
+
+                        <CardContent>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => router.push(`/business/${b.id}`)}
+                            >
+                                Manage
+                            </Button>
+
+                        </CardContent>
+
+                    </Card>
                 ))}
 
             </div>
 
         </div>
-    );
 
+    )
 }

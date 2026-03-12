@@ -1,90 +1,72 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { apiRequest } from "@/lib/api";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { apiRequest } from "@/lib/api"
 
 export default function Register() {
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     async function handleSubmit(e: any) {
-        e.preventDefault();
 
-        try {
+        e.preventDefault()
 
-            await apiRequest("/auth/register", {
-                method: "POST",
-                body: JSON.stringify({ name, email, password })
-            });
+        await apiRequest("/auth/register", {
+            method: "POST",
+            body: JSON.stringify({ name, email, password })
+        })
 
-            window.location.href = "/login";
-
-        } catch (err: any) {
-            setError(err.message);
-        }
-    }
-
-    function registerGoogle() {
-        window.location.href =
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+        window.location.href = "/login"
     }
 
     return (
 
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex h-screen items-center justify-center bg-gray-50">
 
-            <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-4 w-80"
-            >
+            <Card className="w-[380px]">
 
-                <h1 className="text-2xl font-bold">
-                    Register
-                </h1>
+                <CardHeader>
+                    <CardTitle>Register</CardTitle>
+                </CardHeader>
 
-                {error && (
-                    <p className="text-red-500 text-sm">
-                        {error}
-                    </p>
-                )}
+                <CardContent>
 
-                <input
-                    className="border p-2"
-                    placeholder="Name"
-                    onChange={(e) => setName(e.target.value)}
-                />
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-4"
+                    >
 
-                <input
-                    className="border p-2"
-                    placeholder="Email"
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                        <Input
+                            placeholder="Name"
+                            onChange={(e) => setName(e.target.value)}
+                        />
 
-                <input
-                    className="border p-2"
-                    type="password"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                        <Input
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
 
-                <button className="bg-black text-white p-2">
-                    Register
-                </button>
+                        <Input
+                            type="password"
+                            placeholder="Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                <button
-                    type="button"
-                    onClick={registerGoogle}
-                    className="border p-2"
-                >
-                    Continue with Google
-                </button>
+                        <Button>
+                            Register
+                        </Button>
 
-            </form>
+                    </form>
+
+                </CardContent>
+
+            </Card>
 
         </div>
-
-    );
+    )
 }
