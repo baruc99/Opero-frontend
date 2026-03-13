@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation"
 import { apiRequest } from "@/lib/api"
 
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Dashboard() {
 
@@ -43,7 +38,6 @@ export default function Dashboard() {
             } catch (err) {
 
                 console.error(err)
-
                 localStorage.removeItem("token")
                 router.push("/login")
 
@@ -72,12 +66,12 @@ export default function Dashboard() {
 
     return (
 
-        <div className="p-10 max-w-5xl mx-auto">
+        <div className="p-10 max-w-6xl mx-auto">
 
             <div className="flex justify-between items-center mb-10">
 
                 <h1 className="text-3xl font-bold">
-                   Opero
+                    Opero
                 </h1>
 
                 <Button
@@ -108,6 +102,7 @@ export default function Dashboard() {
                 )}
 
                 {businesses.map((b: any) => (
+
                     <Card key={b.id}>
 
                         <CardHeader>
@@ -134,6 +129,20 @@ export default function Dashboard() {
 
                             <Button
                                 variant="outline"
+                                onClick={() => router.push(`/business/${b.id}/staff-services`)}
+                            >
+                                Assign Services
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => router.push(`/business/${b.id}/schedule`)}
+                            >
+                                Schedule
+                            </Button>
+
+                            <Button
+                                variant="secondary"
                                 onClick={() => router.push(`/business/${b.id}`)}
                             >
                                 Settings
@@ -142,6 +151,7 @@ export default function Dashboard() {
                         </CardContent>
 
                     </Card>
+
                 ))}
 
             </div>
@@ -149,4 +159,5 @@ export default function Dashboard() {
         </div>
 
     )
+
 }
