@@ -58,10 +58,8 @@ export default function Dashboard() {
     }, [router])
 
     function logout() {
-
         localStorage.removeItem("token")
         router.push("/login")
-
     }
 
     if (loading) {
@@ -74,12 +72,12 @@ export default function Dashboard() {
 
     return (
 
-        <div className="p-10 max-w-4xl mx-auto">
+        <div className="p-10 max-w-5xl mx-auto">
 
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-10">
 
                 <h1 className="text-3xl font-bold">
-                    Dashboard
+                   Opero
                 </h1>
 
                 <Button
@@ -91,17 +89,17 @@ export default function Dashboard() {
 
             </div>
 
-            <div className="mb-6">
+            <div className="mb-8">
 
                 <Button
                     onClick={() => router.push("/create-business")}
                 >
-                    Add Business
+                    Create Business
                 </Button>
 
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid md:grid-cols-2 gap-6">
 
                 {businesses.length === 0 && (
                     <p className="text-gray-500">
@@ -118,13 +116,27 @@ export default function Dashboard() {
                             </CardTitle>
                         </CardHeader>
 
-                        <CardContent>
+                        <CardContent className="flex gap-3 flex-wrap">
+
+                            <Button
+                                variant="outline"
+                                onClick={() => router.push(`/business/${b.id}/services`)}
+                            >
+                                Services
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => router.push(`/business/${b.id}/staff`)}
+                            >
+                                Staff
+                            </Button>
 
                             <Button
                                 variant="outline"
                                 onClick={() => router.push(`/business/${b.id}`)}
                             >
-                                Manage
+                                Settings
                             </Button>
 
                         </CardContent>
